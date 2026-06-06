@@ -1,4 +1,13 @@
+========================================
 Fork of: ESP-LINK: Wifi-Serial Bridge w/REST&MQTT (https://github.com/jeelabs/esp-link)
+upd: add some changes/ideas from: 
+#    https://github.com/xyx0826/esp-link:
+#
+#    https://github.com/larsks/esp-link:
+#
+    https://github.com/xstanislav/esp-link:
+        https://github.com/jeelabs/esp-link/commit/15d8ac97d217d0b58b6d6abb4e304c8e619ee97c Changes to html files now trigger compressor in make
+        https://github.com/jeelabs/esp-link/commit/3833685535fc57782a8e1fb0708ec39b2a75544d Add support for inverting each input and output UART signal
 ========================================
 
 <img src="https://cloud.githubusercontent.com/assets/39480/19333951/73fcdcbe-90ad-11e6-8572-5e654377275a.png">
