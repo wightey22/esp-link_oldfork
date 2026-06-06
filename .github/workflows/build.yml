@@ -18,12 +18,17 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      # Step 2: Run build inside exsisting Docker-container project
+      # Step 2: Make image locally from Dockerfile (in project root)
+      - name: Build local compiler image
+        run: |
+          docker build -t local-esp-link-compiler .
+
+      # Step 3: Run build inside local Docker-containerc
       - name: Build firmware inside Docker
         run: |
-          docker run --rm -v ${{ github.workspace }}:/esp-link jeelabs/esp-link
+          docker run --rm -v ${{ github.workspace }}:/esp-link local-esp-link-compiler
 
-      # Step 3: Save result files, so that they can be downloaded after
+      # Step 4: Save result files, so that they can be downloaded after
       - name: Upload Build Artifacts
         uses: actions/upload-artifact@v4
         with:
