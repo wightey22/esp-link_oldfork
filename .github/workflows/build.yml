@@ -32,7 +32,7 @@ jobs:
       # Step 3: Run build inside local Docker-containerc
       - name: Build firmware inside Docker
         run: |
-          docker run --rm -v ${{ github.workspace }}:/esp-link_oldfork local-esp-link-compiler
+          docker run --rm -v ${{ github.workspace }}:/esp-link local-esp-link-compiler
 
       # Step 4: Save result files, so that they can be downloaded after
       - name: Upload Build Artifacts
