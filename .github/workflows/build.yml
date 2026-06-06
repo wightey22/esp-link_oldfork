@@ -1,0 +1,31 @@
+name: Build C Project (esp-link)
+
+# Triggers: run build on push (commit) into master
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  build-firmware:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Step 1: Clone source code from repo to VM
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      # Step 2: Run build inside exsisting Docker-container project
+      - name: Build firmware inside Docker
+        run: |
+          docker run --rm -v ${{ github.workspace }}:/esp-link jeelabs/esp-link
+
+      # Step 3: Save result files, so that they can be downloaded after
+      - name: Upload Build Artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: esp-link-binaries
+          path: firmware/
