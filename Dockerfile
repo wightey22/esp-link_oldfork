@@ -18,7 +18,7 @@ RUN apt-get update \
 RUN curl -Ls http://s3.voneicken.com/xtensa-lx106-elf-20160330.tgx | tar Jxf -
 RUN curl -Ls http://s3.voneicken.com/esp_iot_sdk_v2.1.0.tgx | tar -Jxf -
 
-ENV XTENSA_TOOLS_ROOT /xtensa-lx106-elf/bin/
+ENV XTENSA_TOOLS_ROOT=/xtensa-lx106-elf/bin/
 
 # This could be used to create an image with esp-link in it from github:
 #RUN git clone https://github.com/jeelabs/esp-link
@@ -31,4 +31,4 @@ VOLUME /esp-link
 WORKDIR /esp-link
 
 # Default command is to run a build, can be overridden on the docker commandline:
-CMD make
+CMD ["make"]

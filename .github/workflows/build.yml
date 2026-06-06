@@ -9,6 +9,10 @@ on:
     branches:
       - master
 
+# Fix: suppress warning about deprecation Node.js 20 for whole workflow
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: 'true'
+
 jobs:
   build-firmware:
     runs-on: ubuntu-latest
@@ -17,6 +21,8 @@ jobs:
       # Step 1: Clone source code from repo to VM
       - name: Checkout repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0 # Fix for "fatal: No names found" err and gets normal tag vers
 
       # Step 2: Make image locally from Dockerfile (in project root)
       - name: Build local compiler image
