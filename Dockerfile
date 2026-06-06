@@ -9,7 +9,7 @@
 FROM ubuntu:16.04
 
 # Tweak: switch repos addreses to the archived ones, due to EOL of Ubuntu 16.04
-RUN sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/sources.list
+RUN sed -i -re 's/([a-z]{2}\.)?archive.ubuntu.com|security.ubuntu.com/old-releases.ubuntu.com/g' /etc/apt/sources.list
 
 RUN apt-get update \
  && apt-get install -y software-properties-common build-essential python curl git \
