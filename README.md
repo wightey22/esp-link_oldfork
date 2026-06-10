@@ -1,14 +1,23 @@
-========================================
-Fork of: ESP-LINK: Wifi-Serial Bridge w/REST&MQTT (https://github.com/jeelabs/esp-link)
-upd: add some changes/ideas from: 
-#    https://github.com/xyx0826/esp-link:
-#
+
+# ========================================
+
+Fork of: ESP-LINK: Wifi-Serial Bridge w/REST&MQTT (<https://github.com/jeelabs/esp-link>)
+upd: add some changes/ideas from:
+
+    https://github.com/xyx0826/esp-link: (in progress)
+
     https://github.com/larsks/esp-link:
-        plenty commits/changes about telnet commands handling, com port options handling (RFC 2216) and increase serial server timeout
+        plenty commits/changes about telnet commands handling, 
+        com port options handling (RFC 2216) 
+        and increase serial server timeout
+        
     https://github.com/xstanislav/esp-link:
-        https://github.com/jeelabs/esp-link/commit/15d8ac97d217d0b58b6d6abb4e304c8e619ee97c Changes to html files now trigger compressor in make
-        https://github.com/jeelabs/esp-link/commit/3833685535fc57782a8e1fb0708ec39b2a75544d Add support for inverting each input and output UART signal
-========================================
+        https://github.com/jeelabs/esp-link/commit/15d8ac97d217d0b58b6d6abb4e304c8e619ee97c - 
+        Changes to html files now trigger compressor in make
+        https://github.com/jeelabs/esp-link/commit/3833685535fc57782a8e1fb0708ec39b2a75544d - 
+        Add support for inverting each input and output UART signal
+
+  #========================================
 
 <img src="https://cloud.githubusercontent.com/assets/39480/19333951/73fcdcbe-90ad-11e6-8572-5e654377275a.png">
 
@@ -40,7 +49,7 @@ The following people contributed significant functionality to esp-link:
 [bc547](https://github.com/bc547) and [katast](https://github.com/katast) (misc contributions).
 Esp-link is the work of many contributors!
 
-Note that http://github.com/jeelabs/esp-link is the original esp-link software which has
+Note that <http://github.com/jeelabs/esp-link> is the original esp-link software which has
 notably been forked by arduino.org as [Esp-Link](https://github.com/arduino-org/Esp-Link) and shipped
 with the initial Arduino Uno Wifi. The JeeLabs esp-link has evolved significantly since the
 fork and added cool new features as well as bug fixes.
@@ -51,6 +60,7 @@ In this document: [goals](#esp-link-goals), [uses](#esp-link-uses), [eye candy](
 [getting-started](#getting-started), [serial-bridge](#serial-bridge), [contact](#contact).
 
 Separate documents:
+
 - [hardware configuration](FLASHING.md), [serial flashing](FLASHING.md#initial-serial-flashing)
 - [wifi configuration](WIFI-CONFIG.md)
 - [troubleshooting](TROUBLESHOOTING.md), [LED indicators](TROUBLESHOOTING.md#led-indicators)
@@ -66,6 +76,7 @@ or (a little slower) open a github issue.
 
 Releases & Downloads
 --------------------
+
 Esp-link uses semantic versioning. The main change between versions 1.x and 2.x was the
 addition of MQTT and outbound REST requests from the attached uC. The main change between 2.x
 and 3.x will be the addition of custom web pages (this is not ready yet).
@@ -120,7 +131,7 @@ mode the attached uC sends custom commands to esp-link with sensor/acturator inf
 registers a set of callbacks with esp-link that control sensors/actuators. This way, custom
 commands in esp-link can receive MQTT messages, make simple callbacks into the uC to get sensor
 values or change actuators, and then respond back with MQTT. The way this is architected is that
-the attached uC registers callbacks at start-up such that the code in the esp doesn't need to 
+the attached uC registers callbacks at start-up such that the code in the esp doesn't need to
 know which exact sensors/actuators the attached uC has, it learns that through the initial
 callback registration.
 
@@ -140,17 +151,20 @@ Getting Started
 ---------------
 
 To get started you need to:
+
  1. prepare your esp8266 module for serial flashing
  2. download the latest esp-link release image (you can build your own later)
  3. flash the firmware
  4. configure the Wifi in esp-link for your network
 
 You can then attach a uC and upload a sketch:
+
  1. attach a uC (e.g. arduino) to your esp8266 module
  2. connect via the serial port to see a pre-loaded sketch running
  3. upload a fresh version of the sketch
 
 From there, more advanced steps are:
+
 - write a sketch that uses MQTT to communicate, or that makes outbound REST requests
 - create some web pages and write a sketch that populates data in them or reacts to buttons
   and forms
