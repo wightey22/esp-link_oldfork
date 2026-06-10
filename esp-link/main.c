@@ -132,7 +132,7 @@ static void ICACHE_FLASH_ATTR prHeapTimerCb(void *arg) {
 char* esp_link_version = VERS_STR(VERSION);
 
 // address of espfs binary blob
-extern uint8_t espfs_image[];
+extern uint32_t _binary_espfs_img_start;
 
 extern void app_init(void);
 extern void mqtt_client_init(void);
@@ -188,10 +188,10 @@ user_init(void) {
   // Wifi
   wifiInit();
   // init the flash filesystem with the html stuff
-  EspFsInitResult res = espFsInit(espLinkCtx, espfs_image, ESPFS_MEMORY);
-  os_printf("espFsInit %s (%d)\n", res?"ERR":"ok", res);
+  espFsInit(espLinkCtx, &_binary_espfs_img_start, ESPFS_MEMORY);
 
-  
+  //EspFsInitResult res = espFsInit(&_binary_espfs_img_start);
+  //os_printf("espFsInit %s\n", res?"ERR":"ok");
   // mount the http handlers
   httpdInit(builtInUrls, 80);
 #ifdef WEBSERVER
