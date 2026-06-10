@@ -211,7 +211,7 @@ telnetUnwrap(serbridgeConnData *conn, uint8_t *inBuf, int len)
         break;
       case DTR_OFF:
         if (mcu_reset_pin >= 0) {
-          GPIO_DIS_OUTPUT(mcu_reset_pin);
+          GPIO_OUTPUT_SET(mcu_reset_pin, 1);
           os_delay_us(100L);
         }
         break;
@@ -356,7 +356,7 @@ serbridgeReset()
 #endif
     GPIO_OUTPUT_SET(mcu_reset_pin, 0);
     os_delay_us(2000L); // esp8266 needs at least 1ms reset pulse, it seems...
-    GPIO_DIS_OUTPUT(mcu_reset_pin);
+    GPIO_OUTPUT_SET(mcu_reset_pin, 1);
   }
 #ifdef SERBR_DBG
   else { os_printf("MCU reset: no pin\n"); }
@@ -421,7 +421,7 @@ serbridgeRecvCb(void *arg, char *data, unsigned short len)
     os_delay_us(100L);
     if (mcu_isp_pin >= 0) GPIO_OUTPUT_SET(mcu_isp_pin, 0);
     os_delay_us(2000L);
-    if (mcu_reset_pin >= 0) GPIO_DIS_OUTPUT(mcu_reset_pin);
+    if (mcu_reset_pin >= 0) GPIO_OUTPUT_SET(mcu_reset_pin, 1);
     //os_delay_us(100L);
     //if (mcu_isp_pin >= 0) GPIO_OUTPUT_SET(mcu_isp_pin, 1);
     os_delay_us(1000L); // wait a millisecond before writing to the UART below
@@ -589,7 +589,7 @@ serbridgeDisconCb(void *arg)
     os_delay_us(100L);
     GPIO_OUTPUT_SET(mcu_reset_pin, 0);
     os_delay_us(100L);
-    GPIO_DIS_OUTPUT(mcu_reset_pin);
+    GPIO_OUTPUT_SET(mcu_reset_pin, 1);
   }
   conn->conn = NULL;
 }
