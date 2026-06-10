@@ -15,6 +15,9 @@
 # optional local configuration file
 -include local.conf
 
+# Python path
+PYTHON ?= python2
+
 # The Wifi station configuration can be hard-coded here, which makes esp-link come up in STA+AP
 # mode trying to connect to the specified AP *only* if the flash wireless settings are empty!
 # This happens on a full serial flash and avoids having to hunt for the AP...
@@ -377,7 +380,7 @@ $(FW_BASE)/user1.bin: $(USER1_OUT) $(FW_BASE)
 	$(Q) $(OBJCP) --only-section .rodata -O binary $(USER1_OUT) eagle.app.v6.rodata.bin
 	$(Q) $(OBJCP) --only-section .irom0.text -O binary $(USER1_OUT) eagle.app.v6.irom0text.bin
 	$(Q) $(ELF_SIZE) -A $(USER1_OUT) |grep -v " 0$$" |grep .
-	$(Q) COMPILE=gcc PATH=$(XTENSA_TOOLS_ROOT):$(PATH) python $(APPGEN_TOOL) $(USER1_OUT) 2 $(ESP_FLASH_MODE) $(ESP_FLASH_FREQ_DIV) $(ESP_SPI_SIZE) 0 >/dev/null
+	$(Q) COMPILE=gcc PATH=$(XTENSA_TOOLS_ROOT):$(PATH) $(PYTHON) $(APPGEN_TOOL) $(USER1_OUT) 2 $(ESP_FLASH_MODE) $(ESP_FLASH_FREQ_DIV) $(ESP_SPI_SIZE) 0 >/dev/null
 	$(Q) rm -f eagle.app.v6.*.bin
 	$(Q) mv eagle.app.flash.bin $@
 	@echo "    user1.bin uses $$(stat -c '%s' $@) bytes of" $(ESP_FLASH_MAX) "available"
@@ -388,7 +391,7 @@ $(FW_BASE)/user2.bin: $(USER2_OUT) $(FW_BASE)
 	$(Q) $(OBJCP) --only-section .data -O binary $(USER2_OUT) eagle.app.v6.data.bin
 	$(Q) $(OBJCP) --only-section .rodata -O binary $(USER2_OUT) eagle.app.v6.rodata.bin
 	$(Q) $(OBJCP) --only-section .irom0.text -O binary $(USER2_OUT) eagle.app.v6.irom0text.bin
-	$(Q) COMPILE=gcc PATH=$(XTENSA_TOOLS_ROOT):$(PATH) python $(APPGEN_TOOL) $(USER2_OUT) 2 $(ESP_FLASH_MODE) $(ESP_FLASH_FREQ_DIV) $(ESP_SPI_SIZE) 1 >/dev/null
+	$(Q) COMPILE=gcc PATH=$(XTENSA_TOOLS_ROOT):$(PATH) $(PYTHON) $(APPGEN_TOOL) $(USER2_OUT) 2 $(ESP_FLASH_MODE) $(ESP_FLASH_FREQ_DIV) $(ESP_SPI_SIZE) 1 >/dev/null
 	$(Q) rm -f eagle.app.v6.*.bin
 	$(Q) mv eagle.app.flash.bin $@
 	$(Q) if [ $$(stat -c '%s' $@) -gt $$(( $(ESP_FLASH_MAX) )) ]; then echo "$@ too big!"; false; fi
