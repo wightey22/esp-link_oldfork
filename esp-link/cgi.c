@@ -192,7 +192,9 @@ extern char *esp_link_version; // in user_main.c
 
 int ICACHE_FLASH_ATTR cgiMenu(HttpdConnData *connData) {
   if (connData->conn==NULL) return HTTPD_CGI_DONE; // Connection aborted. Clean up.
-  char buff[1024];
+
+  char buff[1024]; // maybe 512 will be better?
+
   // don't use jsonHeader so the response does get cached
   noCacheHeaders(connData, 200);
   httpdHeader(connData, "Content-Type", "application/json");
@@ -216,12 +218,17 @@ int ICACHE_FLASH_ATTR cgiMenu(HttpdConnData *connData) {
         "\"Debug log\", \"/log.html\","
         "\"Upgrade Firmware\", \"/flash.html\","
         "\"Web Server\", \"/web-server.html\""
+#ifdef WEBSERVER
 	"%s"
+#endif
       " ], "
       "\"version\": \"%s\", "
       "\"name\": \"%s\""
     " }",
-  WEB_UserPages(), esp_link_version, name);
+#ifdef WEBSERVER
+  WEB_UserPages(),
+#endif
+  esp_link_version, name);
 
   httpdSend(connData, buff, -1);
   return HTTPD_CGI_DONE;

@@ -78,7 +78,7 @@ int ICACHE_FLASH_ATTR cgiPinsSet(HttpdConnData *connData) {
       if (pins & (1<<ser)) { coll = "Serial LED"; goto collision; }
       pins |= 1 << ser;
     }
-        if (tx_enable >= 0) {
+    if (tx_enable >= 0) {
         if (pins & (1<<tx_enable)) { coll = "TX Enable"; goto collision; }
         pins |= 1 << tx_enable;
     }

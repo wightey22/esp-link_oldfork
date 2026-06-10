@@ -107,7 +107,7 @@ int ICACHE_FLASH_ATTR webServerSetupMultipartCallback(MultipartCmd cmd, char *da
         if( webServerSetupWriteFlash( upload_position, (uint32_t *)(&hdr), sizeof(EspFsHeader) ) )
           return 1;
         upload_position += sizeof(EspFsHeader);
-      
+
         char nameBuf[len];
         os_memset(nameBuf, 0, len);
         os_memcpy(nameBuf, data, dataLen);
@@ -115,7 +115,7 @@ int ICACHE_FLASH_ATTR webServerSetupMultipartCallback(MultipartCmd cmd, char *da
         if( webServerSetupWriteFlash( upload_position, (uint32_t *)(nameBuf), len ) )
           return 1;
         upload_position += len;
-      
+
         // add header to HTML files
         if( ( dataLen > 5 ) && ( os_strcmp(data + dataLen - 5, ".html") == 0 ) ) // if the file ends with .html, wrap into an espfs image
         {
@@ -145,7 +145,7 @@ int ICACHE_FLASH_ATTR webServerSetupMultipartCallback(MultipartCmd cmd, char *da
         }
 
         EspFsHeader hdr;
-        hdr.magic = ESPFS_MAGIC; 
+        hdr.magic = ESPFS_MAGIC;
         hdr.fileLenComp = hdr.fileLenDecomp = position + html_header_len;
 
         // restore ESPFS magic
@@ -160,7 +160,7 @@ int ICACHE_FLASH_ATTR webServerSetupMultipartCallback(MultipartCmd cmd, char *da
         // write the termination block
 
         EspFsHeader hdr;
-        hdr.magic = ESPFS_MAGIC; 
+        hdr.magic = ESPFS_MAGIC;
         hdr.flags = 1;
         hdr.compression = 0;
         hdr.nameLen = 0;
@@ -184,6 +184,6 @@ int ICACHE_FLASH_ATTR cgiWebServerSetupUpload(HttpdConnData *connData)
 {
   if( webServerContext == NULL )
     webServerContext = multipartCreateContext( webServerSetupMultipartCallback );
-  
+
   return multipartProcess(webServerContext, connData);
 }

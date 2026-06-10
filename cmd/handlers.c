@@ -42,9 +42,9 @@ static void cmdWifiSelectSSID(CmdPacket *cmd);
 static void cmdWifiSignalStrength(CmdPacket *cmd);
 static void cmdWifiQuerySSID(CmdPacket *cmd);
 static void cmdWifiStartScan(CmdPacket *cmd);
-
+#ifdef MQTT
 void cmdMqttGetClientId(CmdPacket *cmd);
-
+#endif
 // keep track of last status sent to uC so we can notify it when it changes
 static uint8_t lastWifiStatus = wifiIsDisconnected;
 // keep track of whether we have registered our cb handler with the wifi subsystem
@@ -381,7 +381,7 @@ static void ICACHE_FLASH_ATTR cmdWifiStartScan(CmdPacket *cmd) {
   // call a function that belongs in esp-link/cgiwifi.c due to variable access
   wifiStartScan();
 }
-
+#ifdef MQTT
 // Command handler for MQTT information
 void ICACHE_FLASH_ATTR cmdMqttGetClientId(CmdPacket *cmd) {
   CmdRequest req;
@@ -401,3 +401,4 @@ void ICACHE_FLASH_ATTR cmdMqttGetClientId(CmdPacket *cmd) {
 
   os_printf("MqttGetClientId : %s\n", flashConfig.mqtt_clientid);
 }
+#endif

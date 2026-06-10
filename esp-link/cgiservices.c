@@ -4,7 +4,9 @@
 #include "cgi.h"
 #include "config.h"
 #include "sntp.h"
+#ifdef MQTT
 #include "cgimqtt.h"
+#endif
 #ifdef SYSLOG
 #include "syslog.h"
 #endif
@@ -72,8 +74,10 @@ int ICACHE_FLASH_ATTR cgiSystemInfo(HttpdConnData *connData) {
       "\"upload-size\": \"%d\", "
       "\"id\": \"0x%02X 0x%04X\", "
       "\"partition\": \"%s\", "
+#ifdef MQTT
       "\"slip\": \"%s\", "
       "\"mqtt\": \"%s/%s\", "
+#endif
       "\"baud\": \"%d\", "
       "\"description\": \"%s\""
     " }",
@@ -84,9 +88,11 @@ int ICACHE_FLASH_ATTR cgiSystemInfo(HttpdConnData *connData) {
     getUserPageSectionEnd()-getUserPageSectionStart(),
     fid & 0xff, (fid & 0xff00) | ((fid >> 16) & 0xff),
     part_id ? "user2.bin" : "user1.bin",
+#ifdef MQTT
     flashConfig.slip_enable ? "enabled" : "disabled",
     flashConfig.mqtt_enable ? "enabled" : "disabled",
     mqttState(),
+#endif
     flashConfig.baud_rate,
     flashConfig.sys_descr
     );
@@ -147,6 +153,7 @@ int ICACHE_FLASH_ATTR cgiServicesInfo(HttpdConnData *connData) {
 int ICACHE_FLASH_ATTR cgiServicesSet(HttpdConnData *connData) {
   if (connData->conn == NULL) return HTTPD_CGI_DONE; // Connection aborted. Clean up.
 
+#ifdef SYSLOG
   int8_t syslog = 0;
 
   syslog |= getStringArg(connData, "syslog_host", flashConfig.syslog_host, sizeof(flashConfig.syslog_host));
@@ -160,7 +167,6 @@ int ICACHE_FLASH_ATTR cgiServicesSet(HttpdConnData *connData) {
   syslog |= getBoolArg(connData, "syslog_showdate", &flashConfig.syslog_showdate);
   if (syslog < 0) return HTTPD_CGI_DONE;
 
-#ifdef SYSLOG
   if (syslog > 0) {
     syslog_init(flashConfig.syslog_host);
   }
