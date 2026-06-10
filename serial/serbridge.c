@@ -18,7 +18,7 @@
 static struct espconn serbridgeConn1; // plain bridging port
 static struct espconn serbridgeConn2; // programming port
 static esp_tcp serbridgeTcp1, serbridgeTcp2;
-static int8_t mcu_reset_pin, mcu_isp_pin;
+static int8_t mcu_reset_pin, mcu_isp_pin, tx_enable_pin;
 
 uint8_t in_mcu_flashing;   // for disabling slip during MCU flashing
 
@@ -646,9 +646,10 @@ serbridgeInitPins()
 {
   mcu_reset_pin = flashConfig.reset_pin;
   mcu_isp_pin = flashConfig.isp_pin;
+  tx_enable_pin = flashConfig.tx_enable_pin;
 #ifdef SERBR_DBG
-  os_printf("Serbridge pins: reset=%d isp=%d swap=%d invert=%d\n",
-      mcu_reset_pin, mcu_isp_pin, flashConfig.swap_uart, flashConfig.pin_invert);
+  os_printf("Serbridge pins: reset=%d isp=%d tx_enable=%d swap=%d invert=%d\n",
+      mcu_reset_pin, mcu_isp_pin, tx_enable_pin, flashConfig.swap_uart, flashConfig.pin_invert);
 #endif
 
   if (flashConfig.swap_uart) {
@@ -673,12 +674,25 @@ serbridgeInitPins()
   conf |= (flashConfig.pin_invert & UART_INVERT_BIT_NUM) << UART_INVERT_BIT_NUM_S;
   WRITE_PERI_REG(UART_CONF0(0), conf);
 
-  // set both pins to 1 before turning them on so we don't cause a reset
-  if (mcu_isp_pin >= 0)   GPIO_OUTPUT_SET(mcu_isp_pin, 1);
-  if (mcu_reset_pin >= 0) GPIO_DIS_OUTPUT(mcu_reset_pin);
-  // switch pin mux to make these pins GPIO pins
-  if (mcu_reset_pin >= 0) makeGpio(mcu_reset_pin);
-  if (mcu_isp_pin >= 0)   makeGpio(mcu_isp_pin);
+  /* set both pins to 1 before turning them on (so we don't cause a reset)
+   * then switch pin mux to make these pins GPIO pins
+   */
+  if (mcu_isp_pin >= 0) {
+    GPIO_OUTPUT_SET(mcu_isp_pin, 1);
+    makeGpio(mcu_isp_pin);
+  }
+
+  if (mcu_reset_pin >= 0) {
+    GPIO_OUTPUT_SET(mcu_reset_pin, 1);
+    makeGpio(mcu_reset_pin);
+  }
+
+  // set TX_ENABLE to 0 so we start up listening
+  if (tx_enable_pin >= 0) {
+    GPIO_OUTPUT_SET(tx_enable_pin, 0);
+    makeGpio(tx_enable_pin);
+  }
+  //uart0_set_tx_enable_pin(tx_enable_pin); // must set to -1 if that's its value
 }
 
 // Start transparent serial bridge TCP server on specified port (typ. 23)

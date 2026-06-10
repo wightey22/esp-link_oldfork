@@ -44,6 +44,7 @@ typedef struct {
   char     mqtt_password[70];          // MQTT password, was 32-char mqtt_old_password
   char     mqtt_username[70];          // MQTT username, was 32-char mqtt_old_username
   uint8_t  pin_invert;                 // invert serial pins
+  int8_t   tx_enable_pin;
 } FlashConfig;
 extern FlashConfig flashConfig;
 

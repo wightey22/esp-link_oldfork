@@ -232,7 +232,7 @@ onLoad(function() {
   var mm = m(
    '<div id="menu">\
       <div class="pure-menu">\
-        <a class="pure-menu-heading" href="https://github.com/jeelabs/esp-link">\
+        <a class="pure-menu-heading" href="https://github.com/wightey22/esp-link_oldfork">\
         <img src="/favicon.ico" height="32">&nbsp;esp-link</a>\
         <div class="pure-menu-heading system-name" style="padding: 0px 0.6em"></div>\
         <ul id="menu-list" class="pure-menu-list"></ul>\
@@ -393,15 +393,15 @@ function showNotification(text) {
 //===== GPIO Pin mux card
 
 var pinPresets = {
-  // array: reset, isp, conn, ser, swap, rxpup
-  "esp-01":       [  0, -1, 2, -1, 0, 1, 0 ],
-  "esp-01-inv":   [  0, -1, 2, -1, 0, 1, 63 ],
-  "esp-12":       [ 12, 14, 0,  2, 0, 1, 0 ],
-  "esp-12 swap":  [  1,  3, 0,  2, 1, 1, 0 ],
-  "esp-12-inv":   [ 12, 14, 0,  2, 0, 1, 63 ],
-  "esp-12 swap-inv":  [  1,  3, 0,  2, 1, 1, 63 ],
-  "esp-bridge":   [ 12, 13, 0, 14, 0, 0, 0 ],
-  "wifi-link-12": [  1,  3, 0,  2, 1, 0, 0 ],
+  // array: reset, isp, conn, ser, swap, rxpup, inv, txen
+  "esp-01":       [  0, -1, 2, -1, 0, 1, 0, -1 ],
+  "esp-01-inv":   [  0, -1, 2, -1, 0, 1, 63, -1 ],
+  "esp-12":       [ 12, 14, 0,  2, 0, 1, 0, -1 ],
+  "esp-12 swap":  [  1,  3, 0,  2, 1, 1, 0, -1 ],
+  "esp-12-inv":   [ 12, 14, 0,  2, 0, 1, 63, -1 ],
+  "esp-12 swap-inv":  [  1,  3, 0,  2, 1, 1, 63, -1 ],
+  "esp-bridge":   [ 12, 13, 0, 14, 0, 0, 0, -1 ],
+  "wifi-link-12": [  1,  3, 0,  2, 1, 0, 0, -1 ],
 };
 
 var invertPins = {
@@ -440,6 +440,7 @@ function createPresets(sel) {
       $("#pins-invert-group").style.display = "none";
     }
     pinsInvertApplyConfig(pp[6]);
+    setPP("txen",  pp[6]);
     sel.value = 0;
   };
 
@@ -481,6 +482,7 @@ function displayPins(resp) {
   {
     $("#pins-invert-group").style.display = "block";
   }
+  createSelectForPin("txen", resp["txen"]);
   createPresets($("#pin-preset"));
 
   $("#pin-spinner").setAttribute("hidden", "");
@@ -554,7 +556,7 @@ function setPins(ev) {
   setEditToClick()
   var url = "/pins";
   var sep = "?";
-  ["reset", "isp", "conn", "ser", "swap"].forEach(function(p) {
+  ["reset", "isp", "conn", "ser", "swap", "txen"].forEach(function(p) {
     url += sep + p + "=" + $("#pin-"+p).value;
     sep = "&";
   });
