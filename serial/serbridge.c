@@ -557,13 +557,15 @@ serbridgeUartCb(char *buf, short length)
 {
   if (programmingCB) {
     programmingCB(buf, length);
-  } else if (!flashConfig.slip_enable || in_mcu_flashing > 0) {
+  } else
+#ifdef MQTT
+  if (!flashConfig.slip_enable || in_mcu_flashing > 0) {
     //os_printf("SLIP: disabled got %d\n", length);
     console_process(buf, length);
   } else {
     slip_parse_buf(buf, length);
   }
-
+#endif
   serledFlash(50); // short blink on serial LED
 }
 

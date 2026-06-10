@@ -16,7 +16,9 @@
 #include "cgiwifi.h"
 #include "cgipins.h"
 #include "cgitcp.h"
+#ifdef MQTT
 #include "cgimqtt.h"
+#endif
 #include "cgiflash.h"
 #include "cgioptiboot.h"
 #include "cgimega.h"
@@ -135,8 +137,9 @@ char* esp_link_version = VERS_STR(VERSION);
 extern uint32_t _binary_espfs_img_start;
 
 extern void app_init(void);
+#ifdef MQTT
 extern void mqtt_client_init(void);
-
+#endif
 void ICACHE_FLASH_ATTR
 user_rf_pre_init(void) {
   //default is enabled

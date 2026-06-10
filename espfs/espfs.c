@@ -18,10 +18,10 @@ It's written for use with httpd, but doesn't need to be used as such.
 //simplifies debugging, but needs some slightly different headers. The #ifdef takes
 //care of that.
 
-#ifdef __ets__
+//#ifdef __ets__
 //esp build
 #include <esp8266.h>
-#else
+/*#else
 //Test build
 #include <stdio.h>
 #include <stdint.h>
@@ -37,7 +37,7 @@ It's written for use with httpd, but doesn't need to be used as such.
 #define os_printf printf
 #define ICACHE_FLASH_ATTR
 #endif
-
+*/
 #include "espfsformat.h"
 #include "espfs.h"
 

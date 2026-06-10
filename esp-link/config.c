@@ -20,16 +20,20 @@ FlashConfig flashDefault = {
   .swap_uart    = 0,
   .tcp_enable   = 1, .rssi_enable = 0,
   .api_key      = "",
+#ifdef MQTT
   .slip_enable  = 0, .mqtt_enable = 0, .mqtt_status_enable = 0,
   .mqtt_timeout = 2, .mqtt_clean_session = 1,
   .mqtt_port    = 1883, .mqtt_keepalive = 60,
   .mqtt_old_host  = "\0", .mqtt_old_password = "\0", .mqtt_old_username = "\0", .mqtt_clientid = "\0",
   .mqtt_username  = "\0", .mqtt_password = "\0", .mqtt_status_topic = "\0",
   .mqtt_host      = "\0",
+#endif
   .sys_descr 	  = "\0",
   .rx_pullup	  = 1,
   .sntp_server  = "us.pool.ntp.org\0",
+#ifdef SYSLOG
   .syslog_host = "\0", .syslog_minheap = 8192, .syslog_filter = 7, .syslog_showtick = 1, .syslog_showdate = 0,
+#endif
   .mdns_enable = 1, .mdns_servername = "http\0", .timezone_offset = 0,
   .data_bits	= EIGHT_BITS,
   .parity	= NONE_BITS,
@@ -140,13 +144,16 @@ bool ICACHE_FLASH_ATTR configRestore(void) {
     os_strcat(hostname, chipIdStr);
     os_memcpy(&flashConfig.hostname, hostname, os_strlen(hostname));
 #endif
+#ifdef MQTT
     os_memcpy(&flashConfig.mqtt_clientid, &flashConfig.hostname, os_strlen(flashConfig.hostname));
     os_memcpy(&flashConfig.mqtt_status_topic, &flashConfig.hostname, os_strlen(flashConfig.hostname));
+#endif
     flash_pri = 0;
     return false;
   }
   // copy good one into global var
   os_memcpy(&flashConfig, flash_pri == 0 ? &ff0.fc : &ff1.fc, sizeof(FlashConfig));
+#ifdef MQTT
   // convert old config
   if (flashConfig.mqtt_host[0] == 0 && flashConfig.mqtt_old_host[0] != 0) {
       // the mqtt_host got changed from 32 chars to 64 in a new location
@@ -168,7 +175,7 @@ bool ICACHE_FLASH_ATTR configRestore(void) {
       os_memcpy(flashConfig.mqtt_password, flashConfig.mqtt_old_username, 32);
       os_memset(flashConfig.mqtt_old_username, 0, 32);
   }
-
+#endif
   if (flashConfig.data_bits == 0) {
       // restore to default 8N1
       flashConfig.data_bits = flashDefault.data_bits;
