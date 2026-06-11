@@ -50,7 +50,7 @@ int ICACHE_FLASH_ATTR cgiPinsSet(HttpdConnData *connData) {
 
   int8_t ok = 0;
   int8_t reset, isp, conn, ser, tx_enable;;
-  uint8_t swap, rxpup, pinvert;
+  bool swap, rxpup, pinvert;
   ok |= getInt8Arg(connData, "reset", &reset);
   ok |= getInt8Arg(connData, "isp", &isp);
   ok |= getInt8Arg(connData, "conn", &conn);
