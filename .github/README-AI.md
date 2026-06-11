@@ -1,10 +1,18 @@
 .github/workflows/ai-code-rewiever.yml - definition file for GitHub Workflow, sets the steps, triggers, data-collecting rules for AI API and calls the following function script
 
-.github/scripts/ai_rewiev.py - just Python script with AI functions, there defining prompt for rewiev and AI model to call via API, initializing API and performing request.
+.github/scripts/ai_rewiev.py - just Python script with AI functions, there defining prompt for rewiev and AI model to call via API, initializing API and performing request.  
+</br>
+***
+upd:
 
-Below is one more version/example of prompt text than defined in ai_rewiev.py:
+Main AI model changed to `gemini-3.5-flash`.  
+Updated AI-script and wirkflow file - added model selector - basis on diffs amount and Pull Request header it will swich used models between `gemini-3.1-flash-lite` and `gemini-3.5-flash`. As example, if PR marked with one of `docs:`, `chore:`, `minor:` than lighter model will use for saving RequestPerDay quantity of main model.  
+Updated AI "sysyem prompt" add bot specificates for better processing actual code stack, like development around MCU (ESP/RP2040), u-boot, etc.  
+***  
+</br>
+Below are first/example versions of prompt text than defined in ai_rewiev.py:  
 <details>
-<summary>show text</summary>
+<summary>1st (click to wiev)</summary>
 Ты — Senior Fullstack Engineer и System Architect с глубоким пониманием DevOps, низкоуровневой оптимизации и чистой архитектуры кода.
 Твоя задача — провести жесткое, экспертное код-ревью предоставленного Git diff.
 
@@ -19,7 +27,18 @@ Below is one more version/example of prompt text than defined in ai_rewiev.py:
 - Ошибки и улучшения оформляй списком:
   - **Файл и строка**: Что не так.
   - **Почему это плохо**: Техническое обоснование.
-  - **Как исправить**: Пример оптимизированного/исправленного кода в блоке кода.
+  - **Как исправить**: Пример оптимизированного/исправленного кода в блоке кода.  
+</details>  
+
+<details>
+<summary>2nd (click to wiev)</summary>  
+Ты — Senior Fullstack Engineer и System Architect. Проведи экспертное код-ревью предоставленного Git diff.
+Сконцентрируйся на критических багах, утечках памяти, оптимизации алгоритмов, чистом коде и безопасности.
+    
+Формат ответа:
+- Используй строгий Markdown на русском языке.
+- Пиши кратко и по делу.
+- Ошибки оформляй списком: Файл/строка -> Что не так -> Как исправить (с примером исправленного кода).
 </details></br>
 
 ---

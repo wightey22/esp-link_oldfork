@@ -31,6 +31,7 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
           TARGET_BRANCH: ${{ github.event.pull_request.base.ref }}
+          PR_TITLE: ${{ github.event.pull_request.title }} # <-- Add PR header for model switching
         run: |
           git diff origin/$TARGET_BRANCH...HEAD -- . ':!*.json' ':!*.lock' ':!*.md' > pr_diff.txt
           
