@@ -1,18 +1,23 @@
 
-# ========================================
 
-Fork of: ESP-LINK: Wifi-Serial Bridge w/REST&MQTT (<https://github.com/jeelabs/esp-link>)
+### Fork of: 
+**ESP-LINK: Wifi-Serial Bridge w/REST&MQTT (<https://github.com/jeelabs/esp-link>)**
+
+---
 upd: add some changes/ideas, most of all from:
 
-    https://github.com/larsks/esp-link:
-        plenty small changes about telnet commands handling, 
-        com port options handling (RFC 2216) 
-        and increase serial server timeout
+>https://github.com/larsks/esp-link:  
+plenty small changes about telnet commands handling, Com port options handling (RFC 2216) and increase serial server timeout
         
-    https://github.com/xstanislav/esp-link:
-        Add support for inverting each input and output UART signal, etc
+>https://github.com/xstanislav/esp-link:  
+Add support for inverting each input and output UART signal, etc
 
-  #========================================
+</br>
+
+---
+
+<details>
+<summary>show original README</summary>
 
 <img src="https://cloud.githubusercontent.com/assets/39480/19333951/73fcdcbe-90ad-11e6-8572-5e654377275a.png">
 
@@ -191,3 +196,4 @@ Contact
 
 If you find problems with esp-link, please create a github issue. If you have a question, please
 use the gitter chat link at the top of this page.
+</details>

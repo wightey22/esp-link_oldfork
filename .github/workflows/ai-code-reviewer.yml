@@ -1,0 +1,46 @@
+name: Free Gemini Code Reviewer
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened]
+
+jobs:
+  review:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install google-generativeai
+
+      - name: Analyze Code and Comment
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          TARGET_BRANCH: ${{ github.event.pull_request.base.ref }}
+        run: |
+          git diff origin/$TARGET_BRANCH...HEAD -- . ':!*.json' ':!*.lock' ':!*.md' > pr_diff.txt
+          
+          if [ ! -s pr_diff.txt ]; then
+            echo "If no changes for analysis."
+            exit 0
+          fi
+          
+          python .github/scripts/ai_review.py
+          
+          if [ -f ai_response.md ]; then
+            gh pr comment $PR_NUMBER --body-file ai_response.md
+          fi
