@@ -1,0 +1,38 @@
+name: Manual AI Codebase Audit & Fork Compare
+
+on:
+  workflow_dispatch:
+    inputs:
+      target_fork:
+        description: 'Repository to compare (ex.: nickname/esp-link). Leave it blank if need only own code base analysis.'
+        required: false
+        default: ''
+        type: string
+
+jobs:
+  audit:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      issues: write # Gives permissions for bot to create Issues with details
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.10'
+
+      - name: Install Dependencies
+        run: pip install google-generativeai requests
+
+      - name: Run AI Audit
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          REPO_OWNER: ${{ github.repository_owner }}
+          REPO_NAME: ${{ github.event.repository.name }}
+          TARGET_FORK: ${{ inputs.target_fork }}
+        run: python .github/scripts/ai_manual_audit.py

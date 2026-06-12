@@ -67,3 +67,42 @@ but small context window. May be very useful when dealing with frequent minor ed
 Switching to using the another AI model can be made by changing param `model_name="{model_name}"` in ai_rewiev.py
 
 **Pay your attention** when swithcing to Gemma models - their naming in script may be a little different, for example: `model_name="gemma-4-31b-it"`, where suffix "-it" means "instruction-tuned" (exactly what we need for rewiever).
+
+---
+
+Also I'm looked into another services/platforms which provides API access to their AI models on **"tier Free"** account basis (of cource with limits/restrictions, but most of them are sufficient to using on personal or not very complex development, etc).
+
+Here is (provided data is actual on date of commiting this) some model plans provided by Groq API:
+|Model                                    |RPM | RPD    | TPM | TPD      |	
+|-----------------------------------------|----|--------|-----|----------|
+|allam-2-7b                               |	30 |	7K    | 6K  |	500K	   |
+|groq/compound                            |	30 |	250   | 70K | No limit |
+|groq/compound-mini                       |	30 |	250	  | 70K | No limit |
+|llama-3.1-8b-instant                     |	30 |	14.4K | 6K  | 500K	   |
+|llama-3.3-70b-versatile                  | 30 |	1K	  | 12K | 100K	   |
+|meta-llama/llama-4-scout-17b-16e-instruct|	30 |	1K	  | 30K | 500K	   |
+|meta-llama/llama-prompt-guard-2-22m.     |	30 |	14.4K | 15K	| 500K	   |
+|meta-llama/llama-prompt-guard-2-86m.     |	30 |	14.4K | 15K	| 500K	   |
+|openai/gpt-oss-120b                      |	30 |	1K	  | 8K	| 200K	   |
+|openai/gpt-oss-20b                       |	30 |	1K	  | 8K	| 200K	   |
+|openai/gpt-oss-safeguard-20b             |	30 |	1K	  | 8K	| 200K	   |
+|qwen/qwen3-32b                           |	60 |	1K	  | 6K	| 500K     |
+
+---
+</br>
+
+From the **OpenAI** (ChatGPT models) on unpaid basis, as I figured out, we can use only as classic chat (since "OpenAI Platform" which provides API tokens avaliable only in paid tariffs), only possible useful option is connect *ChatGPT Codex Connector* to you GitHub account/workspace as external GitHub App to interact with your code repo from `https://chatgpt.com/apps/github/connector_{uuid}` app.
+
+---
+</br>
+
+**Hugging Face Serverless Inference API** Lets you run open-source top models like Llama-3 or Qwen-2.5-Coder for free (with rate limits). However, it’s more difficult to configure code size/windows limits there. But anyway, really interesting variant for ones who are around AI-dev/AI-powered development porposes, entusiasts, etc.
+
+---
+
+Upd2: added manual-triggered AI-rewiever and comparser actions (analyser script `scripts/ai_manual_audit.py` and workflow definition `workflows/ai-manual-audit.yml`). It is runs on the most suitable model available for this purpose among those that are free-for-charge available - `gemini-3.5-flash`.  
+To run go *Actions* tab, select *Manual AI Codebase Audit & Fork Compare*, hit Run workflow. If need to compare this repo with foreign fork, just type that fork repo-name as `{git_name/git_repo}` in the text filed. Else (when leaveing this field blank) the own repo will be rewieved/analysed. In both cases the report should be provided as auto-created *GitHub Issue* with all details in it.  
+At least, the idea was exactly like that `¯\_(ツ)_/¯`
+
+---
+
