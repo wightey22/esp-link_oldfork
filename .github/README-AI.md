@@ -103,6 +103,6 @@ From the **OpenAI** (ChatGPT models) on unpaid basis, as I figured out, we can u
 Upd2: added manual-triggered AI-rewiever and comparser actions (analyser script `scripts/ai_manual_audit.py` and workflow definition `workflows/ai-manual-audit.yml`). It is runs on the most suitable model available for this purpose among those that are free-for-charge available - `gemini-3.5-flash`.  
 To run go *Actions* tab, select *Manual AI Codebase Audit & Fork Compare*, hit Run workflow. If need to compare this repo with foreign fork, just type that fork repo-name as `{git_name/git_repo}` in the text filed. Else (when leaveing this field blank) the own repo will be rewieved/analysed. In both cases the report should be provided as auto-created *GitHub Issue* with all details in it.  
 At least, the idea was exactly like that `¯\_(ツ)_/¯`
-
+P.S.: bty, as we found there are not too simple with that TokensPerMinute limits, seems that a single half-sized request burst can completely reach it.
 ---
 

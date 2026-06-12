@@ -1,5 +1,5 @@
 import os
-import google.generativeai as genai
+import google.genai as genai
 
 def determine_model(diff_text, pr_title):
     """

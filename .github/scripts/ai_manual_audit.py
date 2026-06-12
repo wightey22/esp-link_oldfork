@@ -1,13 +1,13 @@
 import os
 import json
 import requests
-import google.generativeai as genai
+import google.genai as genai
 
 def get_local_codebase():
     """Collects all meaningful sources into single text block."""
     code_text = "=== CURRENT CODEBASE ===\n\n"
     # File extentions to proceed
-    valid_extensions = ('.c', '.h', 'Makefile', '.mk')
+    valid_extensions = ('.c', '.h', 'Makefile', '.mk', '.html', '.js', '.css', '.py', 'megaflash', 'wiflash', '')
     
     for root, dirs, files in os.walk('.'):
         # Except hide folders and compiled blobs/binares
