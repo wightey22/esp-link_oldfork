@@ -60,7 +60,7 @@ def create_github_issue(title, body, token, repo_full_name):
         print(f"Report successfully published: {response.json()['html_url']}")
     else:
         print(f"Error creating Issue: {response.status_code}")
-
+#main routine
 def main():
     api_key = os.getenv("GEMINI_API_KEY")
     gh_token = os.getenv("GITHUB_TOKEN")
@@ -85,8 +85,8 @@ def main():
     # protection from error 429: exceeding token limits (trying to set around ~180k)
     MAX_CHARS = 750000
     if len(context) > MAX_CHARS:
-        print(f"Внимание: Контекст слишком велик ({len(context)} символов). Обрезаем до {MAX_CHARS}...")
-        context = context[:MAX_CHARS] + "\n\n...[ДАННЫЕ ОБРЕЗАНЫ ДЛЯ СОБЛЮДЕНИЯ ЛИМИТОВ API]..."
+        print(f"Attention: The context is too big ({len(context)} symbols). Cutting to {MAX_CHARS}...")
+        context = context[:MAX_CHARS] + "\n\n...[DATA TRUNCATED FOR API LIMITS COMPLIANCE]..."
 
     # 2. Forming deep system prompt
     system_prompt = """

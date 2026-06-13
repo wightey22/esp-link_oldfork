@@ -76,7 +76,7 @@ def main():
         final_comment = f"🤖 **AI Reviewer** (Model: `{model_name}`)\n\n" + response.text
         with open("ai_response.md", "w", encoding="utf-8") as rf:
             rf.write(final_comment)
-            
+
     except Exception as e:
         print(f"Error calling Gemini API: {e}")
 
