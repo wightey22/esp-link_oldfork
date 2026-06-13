@@ -23,7 +23,7 @@ jobs:
           python-version: '3.11'
 
       - name: Install Dependencies
-        run: pip install google-genai
+        run: pip install google-generativeai
 
       - name: Analyze Code and Comment
         env:

@@ -1,7 +1,7 @@
 import os
 import json
 import requests
-import google.genai as genai
+import google.generativeai as genai
 
 def get_local_codebase():
     """Collects all meaningful sources into single text block."""
