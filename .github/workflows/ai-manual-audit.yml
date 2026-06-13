@@ -23,10 +23,10 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.12' # upd to actual ver
 
       - name: Install Dependencies
-        run: pip install google-generativeai requests
+        run: pip install google-genai requests # upd to actual package ver
 
       - name: Run AI Audit
         env:

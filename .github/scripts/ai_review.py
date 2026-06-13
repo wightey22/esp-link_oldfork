@@ -1,5 +1,6 @@
 import os
-import google.generativeai as genai
+from google import genai
+from google.genai import types
 
 def determine_model(diff_text, pr_title):
     """
@@ -8,17 +9,17 @@ def determine_model(diff_text, pr_title):
     # Marks in PR naming which indicies that lighter model is enough for
     light_keywords = ['docs:', 'chore:', 'style:', 'minor:', 'readme', 'fix typo']
     title_lower = pr_title.lower() if pr_title else ""
-    
+
     # 1. Checking header
     if any(kw in title_lower for kw in light_keywords):
         return "gemini-3.1-flash-lite", "Lighter model selected (based on PR header tags)"
-        
+
     # 2. Checking diff size (for ex, less 3000 symbols — that expect equals around 50-80 code lines)
     if len(diff_text) < 3000:
         return "gemini-3.1-flash-lite", "Lighter model selected (due to small amount of changes)"
-        
-    # All other cases using the main (the "flagship" among accessible models)
-    return "gemini-3.5-flash", "Heavier (main) model selected (complex or high-volume code)"
+
+    # All other cases using the "bigger" among accessible models
+    return "gemini-3-flash", "more powerful model selected (complex or high-volume code)"
 
 def main():
     api_key = os.getenv("GEMINI_API_KEY")
@@ -28,8 +29,8 @@ def main():
         print("Error: GEMINI_API_KEY is not defined")
         return
 
-    # Initialize Gemini
-    genai.configure(api_key=api_key)
+    # new client version init
+    client = genai.Client(api_key=api_key)
 
     with open("pr_diff.txt", "r", encoding="utf-8") as f:
         diff_content = f.read()
@@ -45,7 +46,7 @@ def main():
     system_prompt = """
     Ты — Senior Embedded & Systems Engineer. Проведи жесткое, экспертное код-ревью предоставленного Git diff.
     Твоя специализация: C/C++, микроконтроллеры (ESP8266, ESP32, RP2040), а также низкоуровневая разработка под Linux (U-Boot, Device Tree, ядра для ARM/MIPS/Marvell SoC).
-    
+
     Особое внимание удели:
     1. Утечкам памяти, переполнениям буфера и работе с указателями.
     2. Оптимизации производительности и размера бинарника (для MCU).
@@ -60,14 +61,17 @@ def main():
     # Colloect all request body together (Gemini clearly understand commands and data combinations)
     full_prompt = f"{system_prompt}\n\nВот изменения в Pull Request ({pr_title}), которые нужно проанализировать:\n\n{diff_content}"
 
+    # New model setup
+    config = types.GenerateContentConfig(
+        temperature=0.2,
+    )
     try:
-        # Using tax-free and fast model gemini-2.5-flash
-        model = genai.GenerativeModel(
-            model_name=model_name,
-            generation_config={"temperature": 0.1} # for code analysis always use 'temperature' 0.1 or 0.2 to prevent "fantasies"
-        )
-        response = model.generate_content(full_prompt)
-        
+        response = client.models.generate_content(
+                model='model_name',
+                contents=full_prompt,
+                config=config
+            )
+
         # Add sign to answer, for visibility in Git, about which AI model operated
         final_comment = f"🤖 **AI Reviewer** (Model: `{model_name}`)\n\n" + response.text
         with open("ai_response.md", "w", encoding="utf-8") as rf:
