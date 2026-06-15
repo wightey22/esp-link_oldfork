@@ -10,10 +10,10 @@ jobs:
   review_commit:
     # Skip commit if its message contains markers as indicated below
     if: >
-      !contains(lower(github.event.head_commit.message), 'minor:') &&
-      !contains(lower(github.event.head_commit.message), 'chore:') &&
-      !contains(lower(github.event.head_commit.message), 'docs:') &&
-      !contains(lower(github.event.head_commit.message), 'skip-ai')
+      !contains(github.event.head_commit.message, 'minor:') &&
+      !contains(github.event.head_commit.message, 'chore:') &&
+      !contains(github.event.head_commit.message, 'docs:') &&
+      !contains(github.event.head_commit.message, 'skip-ai')
     runs-on: ubuntu-latest
     permissions:
       contents: write # Required for adding comments to a commit
