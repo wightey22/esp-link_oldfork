@@ -413,7 +413,7 @@ int ICACHE_FLASH_ATTR cgiWiFiConnect(HttpdConnData *connData) {
   return HTTPD_CGI_DONE;
 }
 
-static bool ICACHE_FLASH_ATTR parse_ip(char *buff, ip_addr_t *ip_ptr) {
+/*static bool ICACHE_FLASH_ATTR parse_ip(char *buff, ip_addr_t *ip_ptr) {
   char *next = buff; // where to start parsing next integer
   int found = 0;     // number of integers parsed
   uint32_t ip = 0;   // the ip addres parsed
@@ -437,7 +437,48 @@ static bool ICACHE_FLASH_ATTR parse_ip(char *buff, ip_addr_t *ip_ptr) {
   }
   return false;
 }
-
+*/
+//rewrited func
+static bool ICACHE_FLASH_ATTR parse_ip(const char *str, size_t len, ip_addr_t *ip_ptr) {
+  if (str == NULL || ip_ptr == NULL || len == 0)
+      return false;
+  uint32_t ip = 0;
+  uint32_t octet = 0;
+  uint8_t octet_num = 0;
+  bool have_digit = false;
+  for (size_t i = 0; i < len; i++) {
+      char c = str[i];
+      if (c == '\0')
+          break;
+      if (c >= '0' && c <= '9') {
+          have_digit = true;
+          octet = octet * 10 + (c - '0');
+          if (octet > 255)
+              return false;
+          continue;
+      }
+      if (c == '.') {
+          if (!have_digit)
+              return false;
+          if (octet_num >= 3)
+              return false;
+          ip |= (octet << (octet_num * 8));
+          octet_num++;
+          octet = 0;
+          have_digit = false;
+          continue;
+      }
+      return false;
+    }
+    if (!have_digit)
+        return false;
+    if (octet_num != 3)
+        return false;
+    ip |= (octet << 24);
+    ip_ptr->addr = ip;
+    return true;
+}
+//end rewrited func
 #ifdef DEBUGIP
 static void ICACHE_FLASH_ATTR debugIP() {
   struct ip_info info;
@@ -501,10 +542,10 @@ int ICACHE_FLASH_ATTR cgiWiFiSpecial(HttpdConnData *connData) {
   if (os_strcmp(dhcp, "off") == 0) {
     // parse static IP params
     struct ip_info ipi;
-    bool ok = parse_ip(staticip, &ipi.ip);
-    if (nl > 0) ok = ok && parse_ip(netmask, &ipi.netmask);
+    bool ok = parse_ip(staticip, (size_t)sl, &ipi.ip);
+    if (nl > 0) ok = ok && parse_ip(netmask, (size_t)nl, &ipi.netmask);
     else IP4_ADDR(&ipi.netmask, 255, 255, 255, 0);
-    if (gl > 0) ok = ok && parse_ip(gateway, &ipi.gw);
+    if (gl > 0) ok = ok && parse_ip(gateway, (size_t)gl, &ipi.gw);
     else ipi.gw.addr = 0;
     if (!ok) {
       jsonHeader(connData, 400);
@@ -636,7 +677,7 @@ int ICACHE_FLASH_ATTR cgiApSettingsChange(HttpdConnData *connData) {
         int value = atoi(buff);
         if(value == 0  || value == 1){
             apconf.ssid_hidden = value;
-        }else{
+        }else{parse_ip
             // If out of range, set by default
             apconf.ssid_hidden = 0;
         }
@@ -645,7 +686,7 @@ int ICACHE_FLASH_ATTR cgiApSettingsChange(HttpdConnData *connData) {
     len=httpdFindArg(connData->getArgs, "ap_channel", buff, sizeof(buff));
     if(len>0){
         int value = atoi(buff);
-        if(value >= 1  || value <= 13){
+        if(value >= 1  && value <= 13){
             apconf.channel = value;
         }else{
             // If out of range, set by default
@@ -967,7 +1008,7 @@ void ICACHE_FLASH_ATTR wifiInit() {
     // The default sleep mode should be modem_sleep, but we set it here explicitly for good
     // measure. We can't use light_sleep because that powers off everthing and we would loose
     // all connections.
-    wifi_set_sleep_type(MODEM_SLEEP_T);
+    wifi_set_sleep_type(NONE_SLEEP_T);
 
     wifi_set_event_handler_cb(wifiHandleEventCb);
     // check on the wifi in a few seconds to see whether we need to switch mode

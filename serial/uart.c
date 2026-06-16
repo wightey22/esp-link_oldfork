@@ -239,6 +239,8 @@ uart_recvTask(os_event_t *events)
 // Turn UART interrupts off and poll for nchars or until timeout hits
 uint16_t ICACHE_FLASH_ATTR
 uart0_rx_poll(char *buff, uint16_t nchars, uint32_t timeout_us) {
+  if (!buff || nchars == 0)
+    return 0;
   ETS_UART_INTR_DISABLE();
   uint16_t got = 0;
   uint32_t start = system_get_time(); // time in us

@@ -119,11 +119,13 @@ telnetUnwrap(serbridgeConnData *conn, uint8_t *inBuf, int len)
     case TN_break_cmd: {
         if (((READ_PERI_REG(UART_STATUS(UART0))>>UART_TXFIFO_CNT_S)&UART_TXFIFO_CNT) == 0) {  // TX-FIFO of UART0 must be empty
           os_printf("Telnet: BREAK\n");
+          ETS_UART_INTR_DISABLE();
           PIN_FUNC_SELECT(PERIPHS_IO_MUX_U0TXD_U, FUNC_GPIO1);
           GPIO_OUTPUT_SET(1, 0);
           os_delay_us(1000L);
           GPIO_OUTPUT_SET(1, 1);
           PIN_FUNC_SELECT(PERIPHS_IO_MUX_U0TXD_U, FUNC_U0TXD);
+          ETS_UART_INTR_ENABLE();
         }
         state = TN_normal;
         break;
@@ -164,7 +166,7 @@ telnetUnwrap(serbridgeConnData *conn, uint8_t *inBuf, int len)
       break;
     case TN_linestate: {
       char respBuf[7] = {IAC, SB,  ComPortOpt, NotifyLineState, 0, IAC, SE};
-      espbuffsend(conn, respBuf, 14);
+      espbuffsend(conn, respBuf, sizeof(respBuf));
       state = TN_end;
       break; }
     case TN_signature: {
@@ -247,8 +249,10 @@ telnetUnwrap(serbridgeConnData *conn, uint8_t *inBuf, int len)
         break; }
       case BRK_ON:
 	if (((READ_PERI_REG(UART_STATUS(UART0))>>UART_TXFIFO_CNT_S)&UART_TXFIFO_CNT) == 0) {  // TX-FIFO of UART0 must be empty
+          ETS_UART_INTR_DISABLE();
           PIN_FUNC_SELECT(PERIPHS_IO_MUX_U0TXD_U, FUNC_GPIO1);
           GPIO_OUTPUT_SET(1, 0);
+          ETS_UART_INTR_ENABLE();
           tn_break = 1;
 #ifdef SERBR_DBG
           os_printf("Telnet: BREAK ON: set TX to LOW\n");
@@ -257,8 +261,10 @@ telnetUnwrap(serbridgeConnData *conn, uint8_t *inBuf, int len)
         break;
       case BRK_OFF:
         if (tn_break == 1) {
+          ETS_UART_INTR_DISABLE();
           GPIO_OUTPUT_SET(1, 1);
           PIN_FUNC_SELECT(PERIPHS_IO_MUX_U0TXD_U, FUNC_U0TXD);
+          ETS_UART_INTR_ENABLE();
           tn_break = 0;
 #ifdef SERBR_DBG
           os_printf("Telnet: BREAK OFF: set TX to HIGH\n");
